@@ -102,19 +102,19 @@ namespace PMLabs
             GL.UniformMatrix4(shader.U("M"), 1, false, M.Values1D);
 
             GL.EnableVertexAttribArray(shader.A("vertex"));
-            GL.EnableVertexAttribArray(shader.A("normal"));
+            GL.EnableVertexAttribArray(shader.A("vertexNormals"));
             GL.EnableVertexAttribArray(shader.A("texCoord"));
             GL.EnableVertexAttribArray(shader.A("color"));
 
             GL.VertexAttribPointer(shader.A("vertex"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.vertices);
-            GL.VertexAttribPointer(shader.A("normal"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.normals);
+            GL.VertexAttribPointer(shader.A("vertexNormals"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.vertexNormals);
             GL.VertexAttribPointer(shader.A("texCoord"), 2, VertexAttribPointerType.Float, false, 0, MyTeapot.texCoords);
             GL.VertexAttribPointer(shader.A("color"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.colors);
 
             GL.DrawArrays(PrimitiveType.Triangles, 0, MyTeapot.vertexCount);
 
             GL.DisableVertexAttribArray(shader.A("vertex"));
-            GL.DisableVertexAttribArray(shader.A("normal"));
+            GL.DisableVertexAttribArray(shader.A("vertexNormals"));
             GL.DisableVertexAttribArray(shader.A("texCoord"));
             GL.DisableVertexAttribArray(shader.A("color"));
 
