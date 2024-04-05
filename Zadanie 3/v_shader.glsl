@@ -5,15 +5,36 @@ uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 
+
 //Atrybuty
 in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
-in vec4 normal; //wektor normalny w przestrzeni modelu
+in vec4 vertexNormals; //wektor normalny w przestrzeni modelu
 in vec4 color; //kolor skojarzony z wierzcho³kiem
 in vec2 texCoord; //wspó³rzêdna teksturowana
+
 
 out vec4 i_c;
 
 void main(void) {
-    i_c=color;
-    gl_Position=P*V*M*vertex;
+    vec4 blackColor = vec4(0, 0, 0, 0); // Kolor czarny
+    vec4 whiteColor = vec4(1, 1, 1, 1); // Kolor bia³y
+    vec4 lightPoint = vec4(0, 0, -6, 1); // Po³o¿enie Ÿród³a œwiat³a w przestrzeni modelu
+    vec4 v=normalize(vec4(0,0,0,1)-V*M*vertex);
+    vec4 r;
+    vec4 v;
+    // Wektor do Ÿród³a œwiat³a w przestrzeni modelu
+
+    vec4 l = normalize(V * lightPoint - V * M * vertex);
+
+    // Normalizacja wektora normalnego
+    vec4 n = normalize(V * M * vertexNormals);
+    
+    float rv=clamp(dot(r,v),0,1);
+
+    rv=pow(rv,25);
+    // Przypisanie obliczonego koloru do wyjœciowej zmiennej
+    i_c = color * blackColor + color * whiteColor*(dot(n,l)) + whiteColor * whiteColor*rv;
+
+    // Ustawienie pozycji w przestrzeni ekranu
+    gl_Position = P * V * M * vertex;
 }
