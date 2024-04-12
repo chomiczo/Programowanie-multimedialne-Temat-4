@@ -16,25 +16,23 @@ in vec2 texCoord; //wspó³rzêdna teksturowana
 out vec4 i_c;
 
 void main(void) {
-    vec4 blackColor = vec4(0, 0, 0, 0); // Kolor czarny
-    vec4 whiteColor = vec4(1, 1, 1, 1); // Kolor bia³y
-    vec4 lightPoint = vec4(0, 0, -6, 1); // Po³o¿enie Ÿród³a œwiat³a w przestrzeni modelu
-    vec4 v=normalize(vec4(0,0,0,1)-V*M*vertex);
-    vec4 r;
-    vec4 v;
-    // Wektor do Ÿród³a œwiat³a w przestrzeni modelu
+	vec4 blackColor = vec4(0,0,0,0);
+	vec4 whiteColor = vec4(1,1,1,1);
+	vec4 lightPoint = vec4(0,0,-6,1);
 
-    vec4 l = normalize(V * lightPoint - V * M * vertex);
+	vec4 l = normalize(V*lightPoint-V*M*vertex);
+	vec4 n = normalize(V*M*vertexNormals);
+	vec4 v=normalize(vec4(0,0,0,1) - V*M*vertex);
+	vec4 r = reflect(-l, n);
 
-    // Normalizacja wektora normalnego
-    vec4 n = normalize(V * M * vertexNormals);
-    
-    float rv=clamp(dot(r,v),0,1);
 
-    rv=pow(rv,25);
-    // Przypisanie obliczonego koloru do wyjœciowej zmiennej
-    i_c = color * blackColor + color * whiteColor*(dot(n,l)) + whiteColor * whiteColor*rv;
 
-    // Ustawienie pozycji w przestrzeni ekranu
-    gl_Position = P * V * M * vertex;
+	float rv=clamp(dot(r,v),0,1);
+
+	rv=pow(rv,25);
+
+	i_c=color*blackColor + color * whiteColor *(dot(n,l)) + whiteColor * whiteColor*rv;
+
+	gl_Position = P*V*M*vertex;
+
 }

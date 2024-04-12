@@ -5,15 +5,25 @@ uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
 
+
 //Atrybuty
 in vec4 vertex; //wspolrzedne wierzcholka w przestrzeni modelu
-in vec4 normal; //wektor normalny w przestrzeni modelu
+in vec4 vertexNormals; //wektor normalny w przestrzeni modelu
 in vec4 color; //kolor skojarzony z wierzcho³kiem
 in vec2 texCoord; //wspó³rzêdna teksturowana
 
-out vec4 i_c;
+out vec4 vertex_f;
+out vec4 vertexNormals_f;
+out vec4 color_f;
+out vec2 texCoord_f;
+
 
 void main(void) {
-    i_c=color;
-    gl_Position=P*V*M*vertex;
+	vertex_f = vertex; 
+	vertexNormals_f = vertexNormals;
+	color_f = color; 
+	texCoord_f = texCoord;
+
+	gl_Position = P*V*M*vertex;
+
 }

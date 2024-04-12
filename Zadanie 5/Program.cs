@@ -12,7 +12,7 @@ using System.Drawing;
 namespace PMLabs
 {
     //Implementacja interfejsu dostosowującego metodę biblioteki Glfw służącą do pozyskiwania adresów funkcji i procedur OpenGL do współpracy z OpenTK.
-    public class BC: IBindingsContext
+    public class BC : IBindingsContext
     {
         public IntPtr GetProcAddress(string procName)
         {
@@ -26,14 +26,16 @@ namespace PMLabs
         static ShaderProgram shader;
         static float speed_y;
         static float speed_x;
+        static int tex;
 
         static KeyCallback kc = KeyProcessor;
 
-        public static void KeyProcessor(System.IntPtr window, Keys key, int scanCode, InputState state, ModifierKeys mods) { 
-            if (state==InputState.Press)
+        public static void KeyProcessor(System.IntPtr window, Keys key, int scanCode, InputState state, ModifierKeys mods)
+        {
+            if (state == InputState.Press)
             {
                 if (key == Keys.Left) speed_y = -3.14f;
-                if (key == Keys.Right) speed_y =  3.14f;
+                if (key == Keys.Right) speed_y = 3.14f;
                 if (key == Keys.Up) speed_x = -3.14f;
                 if (key == Keys.Down) speed_x = 3.14f;
             }
@@ -51,13 +53,15 @@ namespace PMLabs
             GL.ClearColor(0, 0, 0, 1);
             shader = new ShaderProgram("v_shader.glsl", "f_shader.glsl");
             Glfw.SetKeyCallback(window, kc);
-            GL.Enable(EnableCap.DepthTest);            
+            GL.Enable(EnableCap.DepthTest);
+            TextureUnit tex_unit = new TextureUnit();
+            tex = ReadTexture("./metal.png", tex_unit);
 
         }
 
         public static void FreeOpenGLProgram(Window window)
         {
-           
+
         }
 
         //MODYFIKACJA. Ta wersja funkcji pozwala łatwo wczytać teksturę do innej jednostki teksturującej - należy ją podać jako argument.
@@ -75,7 +79,7 @@ namespace PMLabs
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width,
               data.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-             
+
             bitmap.UnlockBits(data);
             bitmap.Dispose();
 
@@ -101,22 +105,25 @@ namespace PMLabs
             mat4 M = mat4.Rotate(angle_y, new vec3(0, 1, 0)) * mat4.Rotate(angle_x, new vec3(1, 0, 0));
             GL.UniformMatrix4(shader.U("M"), 1, false, M.Values1D);
 
+            GL.Uniform1(tex, 0);
+
             GL.EnableVertexAttribArray(shader.A("vertex"));
-            GL.EnableVertexAttribArray(shader.A("normal"));
-            GL.EnableVertexAttribArray(shader.A("texCoord"));
+            GL.EnableVertexAttribArray(shader.A("vertexNormals"));
+            GL.EnableVertexAttribArray(shader.A("i_tc"));
             GL.EnableVertexAttribArray(shader.A("color"));
 
             GL.VertexAttribPointer(shader.A("vertex"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.vertices);
-            GL.VertexAttribPointer(shader.A("normal"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.normals);
-            GL.VertexAttribPointer(shader.A("texCoord"), 2, VertexAttribPointerType.Float, false, 0, MyTeapot.texCoords);
+            GL.VertexAttribPointer(shader.A("vertexNormals"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.vertexNormals);
+            GL.VertexAttribPointer(shader.A("i_tc"), 2, VertexAttribPointerType.Float, false, 0, MyTeapot.texCoords);
             GL.VertexAttribPointer(shader.A("color"), 4, VertexAttribPointerType.Float, false, 0, MyTeapot.colors);
-
             GL.DrawArrays(PrimitiveType.Triangles, 0, MyTeapot.vertexCount);
 
             GL.DisableVertexAttribArray(shader.A("vertex"));
-            GL.DisableVertexAttribArray(shader.A("normal"));
-            GL.DisableVertexAttribArray(shader.A("texCoord"));
+            GL.DisableVertexAttribArray(shader.A("vertexNormals"));
+            GL.DisableVertexAttribArray(shader.A("i_tc"));
             GL.DisableVertexAttribArray(shader.A("color"));
+
+           
 
             Glfw.SwapBuffers(window);
         }
@@ -144,7 +151,7 @@ namespace PMLabs
                 angle_x += speed_x * (float)Glfw.Time;
                 angle_y += speed_y * (float)Glfw.Time;
                 Glfw.Time = 0;
-                DrawScene(window,angle_x,angle_y);
+                DrawScene(window, angle_x, angle_y);
 
                 Glfw.PollEvents();
             }
@@ -154,7 +161,7 @@ namespace PMLabs
 
             Glfw.Terminate();
         }
-                    
+
 
     }
 }
