@@ -55,7 +55,7 @@ namespace PMLabs
             Glfw.SetKeyCallback(window, kc);
             GL.Enable(EnableCap.DepthTest);
             TextureUnit tex_unit = new TextureUnit();
-            tex = ReadTexture("./metal.png", tex_unit);
+            tex = ReadTexture("./metal_spec.png", tex_unit);
 
         }
 
